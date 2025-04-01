@@ -1,0 +1,582 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jasonlws-csharp-net-jwt-demo
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sym-server-config
+  namespace: jasonlws-csharp-net-jwt-demo
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  TokenExpires: '60000'
+  Issuer: jasonlws
+  Audience: admin
+  SymmetricKeyPath: /app/Certs/jwt-symmetric-key.key
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sym-client-config
+  namespace: jasonlws-csharp-net-jwt-demo
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  Issuers: jasonlws
+  Audiences: admin
+  SymmetricKeyPath: /app/Certs/jwt-symmetric-key.key
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rsa-server-config
+  namespace: jasonlws-csharp-net-jwt-demo
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  TokenExpires: '60000'
+  Issuer: jasonlws
+  Audience: admin
+  RsaKeyPath: /app/Certs/jwt-rsa256-privateKey.pem
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rsa-client-config
+  namespace: jasonlws-csharp-net-jwt-demo
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  Issuers: jasonlws
+  Audiences: admin
+  RsaKeyPath: /app/Certs/jwt-rsa256-publicKey.pem
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ecdsa-server-config
+  namespace: jasonlws-csharp-net-jwt-demo
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  TokenExpires: '60000'
+  Issuer: jasonlws
+  Audience: admin
+  EcdsaKeyPath: /app/Certs/jwt-prime256v1-privateKey.pem
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ecdsa-client-config
+  namespace: jasonlws-csharp-net-jwt-demo
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  Issuers: jasonlws
+  Audiences: admin
+  EcdsaKeyPath: /app/Certs/jwt-prime256v1-publicKey.pem
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sym-server-secret
+  namespace: jasonlws-csharp-net-jwt-demo
+type: Opaque
+data:
+  jwt-symmetric-key.key: OGZhZGM1NWRkYTcyM2FmMGE5ZGJjNDRhZDNmZDFmYWUNCg==
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sym-client-secret
+  namespace: jasonlws-csharp-net-jwt-demo
+type: Opaque
+data:
+  jwt-symmetric-key.key: OGZhZGM1NWRkYTcyM2FmMGE5ZGJjNDRhZDNmZDFmYWUNCg==
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rsa-server-secret
+  namespace: jasonlws-csharp-net-jwt-demo
+type: Opaque
+data:
+  jwt-rsa256-privateKey.pem: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2QUlCQURBTkJna3Foa2lH
+    OXcwQkFRRUZBQVNDQktZd2dnU2lBZ0VBQW9JQkFRQ3Y1NjBjTi9VZ2lTQzQKSTFn
+    L3dkZW10Mzg2T0pJWDVxSnM1cHNEMWFyZE51QjAxZHdyM25lMEVoUWNDaWZBaHBQ
+    eDM5MjVQWnRuMWtubAora1gvMXVFaWkrQTNlTWNDWG40S2tOS2xIN0Z0a1ZkR0NL
+    NFh0N3d0R2NKNS9lNCtMTk1QYXVLZUxvbGJsRlhLCmp0dmFaSnF4S1B3U1l6Skx2
+    akJTWERMYXNhZGxjaDNXdkNPa3BTRHI4WHd0U0tHOVE4V0VWRzZaMnVhakRHQisK
+    Vkp0T3o1Kzl4bUpPVjdadUJCa3Y3ZHFFOUcrOTdNdUZvU0dqZVBGTGkvN0VWdFpo
+    c29TVHFTNkNWRlFzaENuSwozaTdqcVg4WVpvQlhqNyt5SkdKeU1lcWNBZnU2QTNr
+    RDZWNDBINFVJbFh3TDBzcjBIZnNOTXpsdWcxUUt3QlkyCmVUdW90Ty9oQWdNQkFB
+    RUNnZ0VBQXprNnFlYTRua1VGRFhyUVZqTEdNZTd3N084MmRpdXExRllSaHl0Mk95
+    R1QKVVhETjNSdnhrNkkxTGlKZGdpQzFPMXgvNHJJblUrclFaZCtGUXQvOE5qYmNB
+    QWc5bFdTSDZNZW9wSkFGSDEzbgpmSWdTTUtzVVRydEhIaGN5TTM5OHlxNkp3cDVW
+    dEJEdTFZeHlxUGpwQU5BZ2RuSE03U2hxR0VoS1FrbTVLSm03CjYzeEpTZ3pMbW5m
+    aU9OKzB3SG9HRHZHZ25RMnZwSGIvTEpzVEVGWWlHdHk0SlFSZ3o0R0RLZVJMdXVM
+    RVZrbnUKaFRheGJIS2FxR3hnYVFUWWppQ1ZUNG1XMnN2L2Q0aWVKRUl6cDdiblJE
+    VjdPOFJpODlsQTdJaU1Ka3RMZ1NRbgpoQ3J5ZVkzTi9VdXJRa3dHckx0eFBrQXEw
+    VkNCZzBFRVZVeXJWM2JtaFFLQmdRRHliTHFON2hnT1NhUG1mTjJmCnhtU2RHOHo1
+    VSs5RDMvV05JMlp0eWRJQVpTMm93R0o1bU9uYndWSFA2QnVGOWk3T3RqS1hZT2Iz
+    VFJJRll1dkQKTThRWUlUS29OSjZVeTExK3p4OHVHOUlRVVYrZ1dsWkJCR2tmNWZo
+    U2FWL0dKR2dYK3ppb1ZnUnEyOHdvclYxdApUNG1BQ2x0K2JPV0tkZWszNHJaUTZN
+    dHUvd0tCZ1FDNXdWc29nWFVQWVdaZ2M2OFZpU1QxZUpVeHhWTGVNMGsxCkVMTDly
+    MTNmN3Vpb0ljYk9jVWJjSlp6QzlDS2VHUncrTjlVbE1ibVoydDlDTWdzSVVHN2M5
+    N1RsU2VlUjNUQ0sKMHI4OERrYnF6MlRJUnFHVEYybXJkenc0VDcyLzFGanlqUFlQ
+    N1BlYVFwbmpDdzNITk55SVNzMUZkSEExZlVlQQpyelJrYnR5Qkh3S0JnRnhNZVZy
+    QVkvaE1vVktJQi9sbEY3bVpkQmtaaytkTHhibk8ySmpFVm1oQUhYbzZoVU8yCnJK
+    TTJyMmR3LzhtcFNYajZkWmlkRkZManpSQ3Y4UU9KR2dmMTI4dWUvU0c1ckFjejVM
+    TXhkSEV5Q2k2TE5udmEKcWd1ekN6Q1ZYaG1ha3VkT2h1dlFsQzM3TVdmcldiN2Nv
+    WVZXYkM5ZVZxYTQ3ZXFSTHNqdldVVVJBb0dBR29KKwp5UHdZd2JZcnp5NFRXYVox
+    OE5aaHJIVzF5dUpVMjA3anpKS2ZlaHIxZHpGQzF5bVJiRSt0M0tETTQvVS9jNTJ5
+    ClBKbXBIRTBCT2NnOGpOWTF6REZKenNOS1dpWFFESy9nL09nb3ROQWVXUHJEaW1O
+    NEFER0hGWjVEdlVISDQrMjgKSEMrOGNuWjQwYzg5Q3lYL0p6Qk50VkRWeHJ4M1hP
+    VWtQQVVhVVE4Q2dZQTNqdlVQT3cxS2VtNnRFLzF4YXRsKwpUUVJ1UjJCTVBKUjls
+    cW9yWXNUbkNwMjBRRThyQ212T0FUb05lTEhNM0o0d3loTk4wamo3N2lIUng1TmZS
+    M1A2CkJXbisyZ2UzMERPcGdEdHRBRDB0TjVGRklmVkwxN0pEaGRsZmJVcldBZTNP
+    U2JzQ1Jka2UwZVRNcDFVazNmbUMKNTdWS3NEelRvT2lML2UrUmMybVA3Zz09Ci0t
+    LS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rsa-client-secret
+  namespace: jasonlws-csharp-net-jwt-demo
+type: Opaque
+data:
+  jwt-rsa256-publicKey.pem: |
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJB
+    UUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFyK2V0SERmMUlJa2d1Q05ZUDhIWApwcmQv
+    T2ppU0YrYWliT2FiQTlXcTNUYmdkTlhjSzk1M3RCSVVIQW9ud0lhVDhkL2R1VDJi
+    WjlaSjVmcEYvOWJoCklvdmdOM2pIQWw1K0NwRFNwUit4YlpGWFJnaXVGN2U4TFJu
+    Q2VmM3VQaXpURDJyaW5pNkpXNVJWeW83YjJtU2EKc1NqOEVtTXlTNzR3VWx3eTJy
+    R25aWElkMXJ3anBLVWc2L0Y4TFVpaHZVUEZoRlJ1bWRybW93eGdmbFNiVHMrZgp2
+    Y1ppVGxlMmJnUVpMKzNhaFBSdnZlekxoYUVobzNqeFM0dit4RmJXWWJLRWs2a3Vn
+    bFJVTElRcHl0NHU0NmwvCkdHYUFWNCsvc2lSaWNqSHFuQUg3dWdONUErbGVOQitG
+    Q0pWOEM5TEs5QjM3RFRNNWJvTlVDc0FXTm5rN3FMVHYKNFFJREFRQUIKLS0tLS1F
+    TkQgUFVCTElDIEtFWS0tLS0tCg==
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ecdsa-server-secret
+  namespace: jasonlws-csharp-net-jwt-demo
+type: Opaque
+data:
+  jwt-prime256v1-privateKey.pem: |
+    LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSU5YQU1jSU1D
+    S1RKaGFqRm1iOWptNVVJS1pyNEZ2ZlJqQjlHb2FlYVJMTFJvQW9HQ0NxR1NNNDkK
+    QXdFSG9VUURRZ0FFam8wWVQrV3Y1b1Qvam1hd3BOSnl0TVE2SXFGN2NzdUkrNTFk
+    OEZUdDQ1RWUzRUh1cWptZApjeFBkb0tEL1g0TGRnYSt0NHBBMWxUWFFkS2N0MUhQ
+    bmxBPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ecdsa-client-secret
+  namespace: jasonlws-csharp-net-jwt-demo
+type: Opaque
+data:
+  jwt-prime256v1-publicKey.pem: |
+    cmVhZCBFQyBrZXkNCndyaXRpbmcgRUMga2V5DQotLS0tLUJFR0lOIFBVQkxJQyBL
+    RVktLS0tLQ0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFam8w
+    WVQrV3Y1b1Qvam1hd3BOSnl0TVE2SXFGNw0KY3N1SSs1MWQ4RlR0NDVFZTNFSHVx
+    am1kY3hQZG9LRC9YNExkZ2ErdDRwQTFsVFhRZEtjdDFIUG5sQT09DQotLS0tLUVO
+    RCBQVUJMSUMgS0VZLS0tLS0NCg==
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sym-server-deployment
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sym-server
+  template:
+    metadata:
+      labels:
+        app: sym-server
+    spec:
+      containers:
+      - name: sym-server
+        image: jasonlws/csharp.net.jwt.demo:sym-server
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jwt-symmetric-key
+          mountPath: /app/Certs/
+          readOnly: true
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: sym-server-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: TokenExpires
+          valueFrom:
+            configMapKeyRef:
+              name: sym-server-config
+              key: TokenExpires
+        - name: Issuer
+          valueFrom:
+            configMapKeyRef:
+              name: sym-server-config
+              key: Issuer
+        - name: Audience
+          valueFrom:
+            configMapKeyRef:
+              name: sym-server-config
+              key: Audience
+        - name: SymmetricKeyPath
+          valueFrom:
+            configMapKeyRef:
+              name: sym-server-config
+              key: SymmetricKeyPath
+      volumes:
+      - name: jwt-symmetric-key
+        secret:
+          secretName: sym-server-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sym-client-deployment
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sym-client
+  template:
+    metadata:
+      labels:
+        app: sym-client
+    spec:
+      containers:
+      - name: sym-client
+        image: jasonlws/csharp.net.jwt.demo:sym-client
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jwt-symmetric-key
+          mountPath: /app/Certs/
+          readOnly: true
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: sym-client-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: Issuers
+          valueFrom:
+            configMapKeyRef:
+              name: sym-client-config
+              key: Issuers
+        - name: Audiences
+          valueFrom:
+            configMapKeyRef:
+              name: sym-client-config
+              key: Audiences
+        - name: SymmetricKeyPath
+          valueFrom:
+            configMapKeyRef:
+              name: sym-client-config
+              key: SymmetricKeyPath
+      volumes:
+      - name: jwt-symmetric-key
+        secret:
+          secretName: sym-client-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsa-server-deployment
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsa-server
+  template:
+    metadata:
+      labels:
+        app: rsa-server
+    spec:
+      containers:
+      - name: rsa-server
+        image: jasonlws/csharp.net.jwt.demo:rsa-server
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: rsa-rsa256-private-key
+          mountPath: /app/Certs/
+          readOnly: true
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-server-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: TokenExpires
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-server-config
+              key: TokenExpires
+        - name: Issuer
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-server-config
+              key: Issuer
+        - name: Audience
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-server-config
+              key: Audience
+        - name: RsaKeyPath
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-server-config
+              key: RsaKeyPath
+      volumes:
+      - name: rsa-rsa256-private-key
+        secret:
+          secretName: rsa-server-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsa-client-deployment
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsa-client
+  template:
+    metadata:
+      labels:
+        app: rsa-client
+    spec:
+      containers:
+      - name: rsa-client
+        image: jasonlws/csharp.net.jwt.demo:rsa-client
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jwt-rsa256-public-key
+          mountPath: /app/Certs/
+          readOnly: true
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-client-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: Issuers
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-client-config
+              key: Issuers
+        - name: Audiences
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-client-config
+              key: Audiences
+        - name: RsaKeyPath
+          valueFrom:
+            configMapKeyRef:
+              name: rsa-client-config
+              key: RsaKeyPath
+      volumes:
+      - name: jwt-rsa256-public-key
+        secret:
+          secretName: rsa-client-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecdsa-server-deployment
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecdsa-server
+  template:
+    metadata:
+      labels:
+        app: ecdsa-server
+    spec:
+      containers:
+      - name: ecdsa-server
+        image: jasonlws/csharp.net.jwt.demo:ecdsa-server
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jwt-prime256v1-private-key
+          mountPath: /app/Certs/
+          readOnly: true
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-server-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: TokenExpires
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-server-config
+              key: TokenExpires
+        - name: Issuer
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-server-config
+              key: Issuer
+        - name: Audience
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-server-config
+              key: Audience
+        - name: EcdsaKeyPath
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-server-config
+              key: EcdsaKeyPath
+      volumes:
+      - name: jwt-prime256v1-private-key
+        secret:
+          secretName: ecdsa-server-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecdsa-client-deployment
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecdsa-client
+  template:
+    metadata:
+      labels:
+        app: ecdsa-client
+    spec:
+      containers:
+      - name: ecdsa-client
+        image: jasonlws/csharp.net.jwt.demo:ecdsa-client
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jwt-prime256v1-public-key
+          mountPath: /app/Certs/
+          readOnly: true
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-client-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: Issuers
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-client-config
+              key: Issuers
+        - name: Audiences
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-client-config
+              key: Audiences
+        - name: EcdsaKeyPath
+          valueFrom:
+            configMapKeyRef:
+              name: ecdsa-client-config
+              key: EcdsaKeyPath
+      volumes:
+      - name: jwt-prime256v1-public-key
+        secret:
+          secretName: ecdsa-client-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sym-server-service
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30001
+  selector:
+    app: sym-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sym-client-service
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30002
+  selector:
+    app: sym-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsa-server-service
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30011
+  selector:
+    app: rsa-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsa-client-service
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30012
+  selector:
+    app: rsa-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecdsa-server-service
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30021
+  selector:
+    app: ecdsa-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecdsa-client-service
+  namespace: jasonlws-csharp-net-jwt-demo
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30022
+  selector:
+    app: ecdsa-client

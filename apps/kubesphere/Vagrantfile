@@ -1,0 +1,148 @@
+# -*- mode: ruby -*- 
+# vi: set ft=ruby : 
+
+require 'getoptlong'
+
+opts = GetoptLong.new(
+	# vagrant default options
+	[ '--force', '-f', GetoptLong::NO_ARGUMENT ],
+	[ '--provision', '-p', GetoptLong::NO_ARGUMENT ],
+	[ '--provision-with', GetoptLong::NO_ARGUMENT ],
+	[ '--provider', GetoptLong::OPTIONAL_ARGUMENT ],
+	[ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+	[ '--check', GetoptLong::NO_ARGUMENT ],
+	[ '--logout', GetoptLong::NO_ARGUMENT ],
+	[ '--token', GetoptLong::NO_ARGUMENT ],
+	[ '--disable-http', GetoptLong::NO_ARGUMENT ],
+	[ '--http', GetoptLong::NO_ARGUMENT ],
+	[ '--https', GetoptLong::NO_ARGUMENT ],
+	[ '--ssh-no-password', GetoptLong::NO_ARGUMENT ],
+	[ '--ssh', GetoptLong::NO_ARGUMENT ],
+	[ '--ssh-port', GetoptLong::NO_ARGUMENT ],
+	[ '--ssh-once', GetoptLong::NO_ARGUMENT ],
+	[ '--host', GetoptLong::NO_ARGUMENT ],
+	[ '--entry-point', GetoptLong::NO_ARGUMENT ],
+	[ '--plugin-source', GetoptLong::NO_ARGUMENT ],
+	[ '--plugin-version', GetoptLong::NO_ARGUMENT ],
+	[ '--debug', GetoptLong::NO_ARGUMENT ],
+	[ '--command', '-c', GetoptLong::NO_ARGUMENT ],
+	# custom options
+	[ '--node', '-n', GetoptLong::REQUIRED_ARGUMENT ],
+)
+
+node='single'
+
+opts.each do |opt, arg|
+	case opt
+		when '--help'
+			puts <<-EOF
+===========================================================================
+
+vagrant [OPTION] <command> [<args>]
+
+-h, --help:
+show help
+
+===========================================================================
+
+			EOF
+		when '--node'
+			node = arg.to_i
+		when '--name'
+			if arg == ''
+				name = 'John'
+			else
+				name = arg
+			end
+	end
+end
+
+ENV['VAGRANT_NO_PARALLEL'] = 'yes' # If this is set, Vagrant will not perform any parallel operations (such as parallel box provisioning). All operations will be performed in serial.
+
+Vagrant.configure(2) do |config| 
+
+	if #{node} == 'multi'
+
+		config.vm.define "jasonlws-kubesphere-node1" do |node1| 
+
+			node1.vm.provision "shell", path: "config/jasonlws-kubesphere-node1-provision.sh"
+
+			node1.vm.hostname="jasonlws-kubesphere-node1" 
+
+			node1.vm.box = "generic/ubuntu2004" 
+
+			node1.vm.network "private_network", ip: "192.168.56.110", netmask: "255.255.255.0"
+
+			node1.vm.network "forwarded_port", guest: 22, host: 2223, id: 'ssh' #ssh
+
+			node1.vm.box_check_update = false 
+		
+			node1.vm.synced_folder ".\\shared\\jasonlws-kubesphere-node1", "/root/jasonlws-kubesphere-node1"
+			
+			node1.vm.provider :virtualbox do |v| 
+
+				v.name = "jasonlws-kubesphere-node1" 
+				v.memory = 8192 # 8GB 
+				v.cpus = 4 
+
+			end 
+
+		end 
+
+		config.vm.define "jasonlws-kubesphere-node2" do |node2| 
+
+			node2.vm.provision "shell", path: "config/jasonlws-kubesphere-node2-provision.sh"
+
+			node2.vm.hostname="jasonlws-kubesphere-node2" 
+
+			node2.vm.box = "generic/ubuntu2004" 
+
+			node2.vm.network "private_network", ip: "192.168.56.120", netmask: "255.255.255.0"
+
+			node2.vm.network "forwarded_port", guest: 22, host: 2224, id: 'ssh' #ssh
+
+			node2.vm.box_check_update = false 
+		
+			node2.vm.synced_folder ".\\shared\\jasonlws-kubesphere-node2", "/root/jasonlws-kubesphere-node2"
+			
+			node2.vm.provider :virtualbox do |v| 
+
+				v.name = "jasonlws-kubesphere-node2" 
+				v.memory = 8192 # 8GB 
+				v.cpus = 4 
+
+			end 
+
+		end 
+
+	end
+
+	config.vm.define "jasonlws-kubesphere-master1" do |master1| 
+
+		master1.vm.provision "shell", path: "config/jasonlws-kubesphere-master1-provision.sh"
+
+		master1.vm.hostname="jasonlws-kubesphere-master1" 
+
+		master1.vm.box = "generic/ubuntu2004" 
+
+		master1.vm.network "private_network", ip: "192.168.56.100", netmask: "255.255.255.0"
+	
+		master1.vm.network "forwarded_port", guest: 22, host: 2222, id: 'ssh' #ssh
+		master1.vm.network "forwarded_port", guest: 30880, host: 30880, id: 'kubesphere' #kubesphere
+		master1.vm.network "forwarded_port", guest: 30180, host: 30180, id: 'jenkis' #jenkis
+
+		master1.vm.box_check_update = false 
+	
+		master1.vm.synced_folder ".\\shared\\jasonlws-kubesphere-master1", "/root/jasonlws-kubesphere-master1"
+		
+		master1.vm.provider :virtualbox do |v| 
+
+			v.name = "jasonlws-kubesphere-master1" 
+			v.memory = 8192 # 8GB 
+			v.cpus = 4 
+
+		end 
+
+	end 
+
+end 

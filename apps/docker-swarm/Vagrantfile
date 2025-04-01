@@ -1,0 +1,85 @@
+# -*- mode: ruby -*- 
+# vi: set ft=ruby : 
+
+ENV['VAGRANT_NO_PARALLEL'] = 'yes' 
+
+Vagrant.configure(2) do |config| 
+
+	config.vm.define "jasonlws-docker-1" do |docker1| 
+
+		docker1.vm.hostname = "jasonlws-docker-1" 
+
+		docker1.vm.box = "generic/ubuntu2004"
+
+		docker1.vm.network "private_network", ip: "192.168.56.121", netmask: "255.255.255.0"
+
+        docker1.vm.network "forwarded_port", guest: 22, host: 1221, id: "ssh" #ssh
+
+		docker1.vm.box_check_update = false 
+
+		docker1.vm.synced_folder ".\\shared\\jasonlws-docker-1", "/root/jasonlws-docker-1"
+
+		docker1.vm.provision "shell", path: "config/docker-provision.sh"
+
+		docker1.vm.provider :virtualbox do |v| 
+
+			v.name = "jasonlws-docker-1" 
+			v.memory = 2048 # 2GB 
+			v.cpus = 1 
+
+		end 
+
+	end 
+
+	config.vm.define "jasonlws-docker-2" do |docker2| 
+
+		docker2.vm.hostname = "jasonlws-docker-2" 
+
+		docker2.vm.box = "generic/ubuntu2004"
+
+		docker2.vm.network "private_network", ip: "192.168.56.122", netmask: "255.255.255.0"
+
+        docker2.vm.network "forwarded_port", guest: 22, host: 1222, id: "ssh" #ssh
+
+		docker2.vm.box_check_update = false 
+
+		docker2.vm.synced_folder ".\\shared\\jasonlws-docker-2", "/root/jasonlws-docker-2"
+
+		docker2.vm.provision "shell", path: "config/docker-provision.sh"
+
+		docker2.vm.provider :virtualbox do |v| 
+
+			v.name = "jasonlws-docker-2" 
+			v.memory = 2048 # 2GB 
+			v.cpus = 1 
+
+		end 
+
+	end 
+
+	config.vm.define "jasonlws-docker-3" do |docker3| 
+
+		docker3.vm.hostname = "jasonlws-docker-3" 
+
+		docker3.vm.box = "generic/ubuntu2004"
+
+		docker3.vm.network "private_network", ip: "192.168.56.123", netmask: "255.255.255.0"
+
+        docker3.vm.network "forwarded_port", guest: 22, host: 1223, id: "ssh" #ssh
+
+		docker3.vm.box_check_update = false 
+
+		docker3.vm.synced_folder ".\\shared\\jasonlws-docker-3", "/root/jasonlws-docker-3"
+
+		docker3.vm.provision "shell", path: "config/docker-provision.sh"
+
+		docker3.vm.provider :virtualbox do |v| 
+
+			v.name = "jasonlws-docker-3" 
+			v.memory = 2048 # 2GB 
+			v.cpus = 1 
+
+		end 
+
+	end 
+end 
